@@ -1,0 +1,280 @@
+# Paths are relative to the project root (the folder that contains Data/ and Processing/).
+# Colors are the map palette. Issue colors and point icons are reserved for later
+# panels; the first figure uses the basemap and ecoregion entries only.
+
+crs:
+  storage: "EPSG:4326"
+  # Equal-area Albers centered on New Guinea. Distances on the map are in metres.
+  map: "+proj=aea +lat_1=-2 +lat_2=-8 +lat_0=-5 +lon_0=141 +datum=WGS84 +units=m +no_defs"
+
+folders:
+  aoi: Data/00_aoi
+  basemap: Data/01_basemap
+  ecoregions: Data/02_ecoregions
+  forest_loss: Data/03_forest_loss
+  mangroves: Data/04_mangroves
+  wetlands_peat: Data/05_wetlands_peat
+  energy: Data/06_energy
+  concessions: Data/07_concessions
+  plastic: Data/08_plastic
+  protected_areas: Data/09_protected_areas
+  processed: Processing/output
+
+files:
+  countries: Data/00_aoi/ne_10m_admin_0_countries.zip
+  admin1: Data/00_aoi/ne_10m_admin_1_states_provinces.zip
+  land: Data/01_basemap/ne_10m_land.zip
+  coastline: Data/01_basemap/ne_10m_coastline.zip
+  rivers: Data/01_basemap/ne_10m_rivers_lake_centerlines.zip
+  lakes: Data/01_basemap/ne_10m_lakes.zip
+  places: Data/01_basemap/ne_10m_populated_places.zip
+  ecoregions: Data/02_ecoregions/Ecoregions2017.zip
+  forest_loss_dir: Data/03_forest_loss
+  mangrove_zip: Data/04_mangroves/GMW-12_v4112.zip
+  peat_asia: Data/05_wetlands_peat/Asia.zip
+  peat_oceania: Data/05_wetlands_peat/Oceania.zip
+  context_gpkg: Processing/output/new_guinea_context.gpkg
+  preview_png: Processing/output/new_guinea_ecoregions.png
+  forest_loss_tif: Processing/output/forest_loss_fraction.tif
+  forest_loss_png: Processing/output/new_guinea_forest_loss.png
+  peat_gpkg: Processing/output/new_guinea_peat.gpkg
+  pressures_gpkg: Processing/output/new_guinea_pressures.gpkg
+  policy_png: Processing/output/new_guinea_policy.png
+  goget_xlsx: Data/06_energy/Global-Oil-and-Gas-Extraction-Tracker-March-2026.xlsx
+  pipelines_zip: Data/06_energy/gem-download.zip
+  lng_zip: Data/06_energy/GEM-GGIT-LNG-Terminals-2025-09-gis-files.zip
+  gogpt_xlsx: Data/06_energy/Global Oil and Gas Plant Tracker (GOGPT) - August 2026.xlsx
+  logging_zip: Data/07_concessions/gfw_logging_download_v2020.shp.zip
+  mining_zip: Data/07_concessions/Global_mining.zip
+  palm_zip: Data/07_concessions/GlobalOilPalm_OP-extent.zip
+  palm_gpkg: Processing/output/new_guinea_palm.gpkg
+
+# Natural Earth 5.1.1 has not split the 2022 Indonesian provinces.
+# Papua and West Papua together still cover Indonesian New Guinea.
+aoi:
+  indonesia_admin1:
+    - Papua
+    - Papua Barat
+  # First-order units on the main island. Bismarck Archipelago and Bougainville
+  # are politically part of PNG and are left off this island mask.
+  png_admin1:
+    - Sandaun
+    - Western
+    - East Sepik
+    - Madang
+    - Morobe
+    - Northern
+    - Milne Bay
+    - Central
+    - National Capital District
+    - Gulf
+    - Chimbu
+    - Enga
+    - Western Highlands
+    - Southern Highlands
+    - Eastern Highlands
+  bbox_padding_degrees: 0.4
+
+places:
+  # Stored in the GeoPackage if the name matches or scalerank is at least this important.
+  keep_scalerank_max: 5
+  labels:
+    - name: Jayapura
+      ha: left
+      va: center
+      dx: 5
+      dy: 2
+    - name: Manokwari
+      ha: left
+      va: bottom
+      dx: 6
+      dy: 4
+    - name: Sorong
+      ha: right
+      va: top
+      dx: -6
+      dy: -2
+    - name: Merauke
+      ha: left
+      va: top
+      dx: 5
+      dy: -3
+    - name: Port Moresby
+      ha: left
+      va: top
+      dx: 5
+      dy: -2
+    - name: Lae
+      ha: left
+      va: bottom
+      dx: 5
+      dy: 2
+
+rivers:
+  # Case-insensitive match against the Natural Earth name field.
+  labels:
+    - Fly
+    - Sepik
+    - Digul
+    - Mamberamo
+
+colors:
+  figure_background: "#FFFFFF"
+  ocean: "#F3F5F6"
+  land: "#E4E7EA"
+  coastline: "#5C6770"
+  rivers: "#6E93B0"
+  river_label: "#1A4560"
+  lakes: "#D5E3EE"
+  admin_boundary: "#8B939C"
+  international_border: "#2C333A"
+  city_marker: "#1C2430"
+  city_label: "#1C2430"
+  inset_land: "#C5CAD1"
+  inset_ocean: "#F7F8F8"
+  inset_dot: "#D00000"
+  inset_frame: "#2C333A"
+  scale_bar: "#1C2430"
+  # One colour family per ecoregion class. Lightness differs so the classes
+  # stay separable in grayscale and for common colour-vision deficiencies.
+  ecoregions:
+    lowland_rainforest:
+      label: Lowland rainforest
+      fill: "#1F7A4D"
+    montane_forest:
+      label: Montane forest
+      fill: "#8FB339"
+    alpine_grasslands:
+      label: Alpine grasslands
+      fill: "#C4A15A"
+    mangroves:
+      label: Mangroves
+      fill: "#3D7A8C"
+    freshwater_swamp_forest:
+      label: Freshwater swamp forest
+      fill: "#6BB3A0"
+    peat_swamp_forest:
+      label: Peat swamp forest
+      fill: "#2F5D50"
+    other:
+      label: Other (savanna and dry forest)
+      fill: "#E0D3B4"
+  # Reserved for later issue panels. Not drawn by 02_plot_context.py.
+  issues:
+    oil_gas: "#C23B22"
+    deforestation: "#E07A3D"
+    wetlands: "#2C6EAB"
+    plastic: "#6B3FA0"
+    protected_areas: "#5C6770"
+  forest_loss:
+    - min: 0.05
+      max: 0.25
+      color: "#E07A3D"
+      hatch: "///"
+      label: "5–25% of 2000 tree cover lost"
+    - min: 0.25
+      max: 0.50
+      color: "#C23B22"
+      hatch: "///"
+      label: "25–50% lost"
+    - min: 0.50
+      max: 1.01
+      color: "#6B3FA0"
+      hatch: "///"
+      label: "More than 50% lost"
+
+# Marker and line styles. Matplotlib marker codes.
+# city, river, coastline, and lake are used on the first map.
+# The remaining symbols are the legend contract for later layers.
+icons:
+  city:
+    marker: "o"
+    size: 16
+    edge_color: "#FFFFFF"
+    edge_width: 0.6
+  river:
+    linestyle: solid
+    width: 0.7
+  coastline:
+    linestyle: solid
+    width: 0.45
+  lake:
+    edge_color: "#6E93B0"
+    edge_width: 0.3
+  admin_boundary:
+    linestyle: solid
+    width: 0.35
+  international_border:
+    linestyle: solid
+    width: 0.9
+  oil_gas_field:
+    marker: "^"
+    size: 28
+    color: "#C23B22"
+    meaning: Oil or gas field
+  lng_terminal:
+    marker: "s"
+    size: 26
+    color: "#8C1D1D"
+    meaning: LNG terminal
+  power_plant:
+    marker: "D"
+    size: 22
+    color: "#E07A5F"
+    meaning: Oil or gas power plant
+  pipeline:
+    linestyle: dashed
+    width: 1.1
+    color: "#C23B22"
+    meaning: Pipeline, which may be a schematic route
+  road:
+    linestyle: solid
+    width: 0.8
+    color: "#8A4B08"
+    meaning: Major road
+  logging_concession:
+    linestyle: solid
+    width: 0.9
+    color: "#3E2723"
+    fill: none
+    meaning: Logging concession boundary
+  oil_palm:
+    color: "#1B5E20"
+    meaning: Closed-canopy oil palm, 2016-2021
+  mining_lease:
+    linestyle: solid
+    width: 0.9
+    color: "#212121"
+    fill: none
+    meaning: Mining area, pickaxe at the polygon centre
+  plastic_river:
+    marker: "o"
+    size_field: emission_tons_yr
+    color: "#6B3FA0"
+    meaning: Modeled river-mouth plastic emission
+  protected_area:
+    linestyle: solid
+    width: 0.6
+    color: "#5C6770"
+    fill: none
+    meaning: WDPA polygon outline
+  hotspot_callout:
+    marker: "o"
+    size: 36
+    face: "#FFFFFF"
+    edge_color: "#1C2430"
+    edge_width: 1.2
+    meaning: Numbered policy callout
+
+preview:
+  title: "New Guinea rainforest ecoregions"
+  subtitle: "Potential ecosystem types (RESOLVE 2017). This is not a map of remaining forest."
+  dpi: 200
+  # A4 landscape. Height is split 1/8 title, 5/8 map, 2/8 legend.
+  figsize_in: [11.69, 8.27]
+  height_ratios: [1, 5, 2]
+  scale_bar_km: 200
+  locator_crs: "+proj=eqearth +datum=WGS84 +units=m +no_defs"
+  qr_label: "QR"
+  forest_title: "Tree-cover loss in New Guinea, 2001–2024"
+  forest_subtitle: "Share of year-2000 tree cover (canopy at least 30%) that was lost. Hansen/UMD v1.12."
